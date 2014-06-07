@@ -56,10 +56,12 @@ public class Bolt : MonoBehaviour {
 	}
 	
 	void OnGUI(){
-		GUI.color = Color.black;
+		Color fading = new Color (0, 0, 0, 1);
 		//label shows if player uses ability when on cooldown
 		if (CooldownTrigger) {
 			labelTimer += Time.deltaTime;
+			fading.a = (1 - labelTimer / 3);
+			GUI.color = fading;
 			GUI.Label (new Rect (10, 10, 300, 20), "The ability is on cooldown.");
 			if (labelTimer > labelTime || OffCooldown) {
 				labelTimer = 0;

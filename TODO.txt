@@ -1,0 +1,8 @@
+TODO AmpersandLime
+
+140607
+
+* Create dummy enemy
+* Make bolts deal damage
+* Set up basic UI
+* Add other bolt
