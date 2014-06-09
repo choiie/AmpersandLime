@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bolt : MonoBehaviour {
+public class EnemyBolt : MonoBehaviour {
 
 	[HideInInspector]
 	public bool OffCooldown = true;

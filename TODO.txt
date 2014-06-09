@@ -3,6 +3,14 @@ TODO AmpersandLime
 140607
 
 * Create dummy enemy
+	- fix random movement
+	- setup enemy bolt
+
 * Make bolts deal damage
 * Set up basic UI
+	- Start screen
+	- Life meter
+
 * Add other bolt
+* Add crystals
+* Add equipment

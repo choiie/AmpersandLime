@@ -8,7 +8,7 @@ public class PlayerControl : MonoBehaviour {
 	[HideInInspector]
 	public bool jump = false;
 	
-	
+	public bool moveInAir = false;
 	public float moveForce = 365f;
 	public float maxSpeed = 5f;
 	public AudioClip[] jumpClips;
@@ -50,18 +50,23 @@ public class PlayerControl : MonoBehaviour {
 
 		anim.SetFloat("Speed", Mathf.Abs(h));
 
-		if (h * rigidbody2D.velocity.x < maxSpeed)
-			rigidbody2D.AddForce(Vector2.right * h * moveForce);
+		//x velocity added only if grounded or air movement enabled
+		if  (grounded || moveInAir == true) {
+			if (h * rigidbody2D.velocity.x < maxSpeed)
+				rigidbody2D.AddForce(Vector2.right * h * moveForce);
 		
-		if (Mathf.Abs(rigidbody2D.velocity.x) > maxSpeed)
-			rigidbody2D.velocity = new Vector2 (Mathf.Sign(rigidbody2D.velocity.x) * maxSpeed, rigidbody2D.velocity.y);
+			if (Mathf.Abs(rigidbody2D.velocity.x) > maxSpeed)
+				rigidbody2D.velocity = new Vector2 (Mathf.Sign(rigidbody2D.velocity.x) * maxSpeed, rigidbody2D.velocity.y);
+		}
 
+		/* Obsolete code to flip character depending on movement direction
 		if (h > 0 && !facingRight)
 			Flip();
 
 		else if (h < 0 && facingRight)
 			Flip();
-
+*/
+		// flips character to face mouse
 		if (mouse.x < playerScreenPoint.x && facingRight) 
 			Flip ();
 
