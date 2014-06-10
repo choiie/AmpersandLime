@@ -4,71 +4,67 @@ using System.Collections;
 public class EnemyBolt : MonoBehaviour {
 
 	[HideInInspector]
-	public bool OffCooldown = true;
+	public bool OffCooldown = false;
 	[HideInInspector]
 	public bool CooldownTrigger = false;
-
 	public Rigidbody2D bolt;
 	public float speed = 20f;
 	public float cooldown = 1f;
+	public float triggerHappy = 0.8f;
 	[HideInInspector]
 	public float cooldownTimer = 0f;
+	public string targetTag = "Player";
+	public float aim = 0.9f;
 
 	public float labelTime = 3f;
 	[HideInInspector]
 	public float labelTimer = 0f; 
 
-	private PlayerControl playerCtrl;
+	private EnemyControl enemyCtrl;
 	private Animator anim;
+	private GameObject target;
+	private bool noLineOfSight;
 
 	void Awake () {
+		target = GameObject.FindGameObjectWithTag(targetTag);
 		anim = transform.root.gameObject.GetComponent<Animator> ();
-		playerCtrl = transform.root.GetComponent<PlayerControl> ();
+		enemyCtrl = transform.root.GetComponent<EnemyControl> ();
 	}
 
 	void Update () {
 
+		//checks for sightline blockers
+		noLineOfSight = Physics2D.Linecast (transform.position, target.transform.position, 1 << LayerMask.NameToLayer("Ground"));
+	
 		//increments cooldown timer
 		if (!OffCooldown)
 			cooldownTimer += Time.deltaTime;
 
-		//triggers warning if ability used when on cooldown
-		if (Input.GetButtonDown("Fire1") && !OffCooldown) 
-			CooldownTrigger = true;
-
-		//fires bolt if fire is pressed
-		if (Input.GetButtonDown("Fire1") && OffCooldown) {
+		//fires bolt if fire is pressed and sightline is clear
+		if (OffCooldown && Random.Range (0,1) < triggerHappy && !noLineOfSight) {
 			OffCooldown = false;
 			anim.SetTrigger ("Shoot");
 			audio.Play();
 			//finds player position in relation to camera.
-			Vector2 playerScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
+			Vector2 targetPos = target.transform.position;
 			//finds mouse position
-			Vector2 mouse = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
-			var dir = (mouse - new Vector2 (playerScreenPoint.x,playerScreenPoint.y)).normalized;
+			Vector2 enemyPos = new Vector2(transform.position.x, transform.position.y);
+			Vector2 slightlyOff = new Vector2 (Random.Range (-1 + aim, 1 - aim),Random.Range (-1 + aim, 1 - aim));
+			var dir = (((targetPos - enemyPos).normalized) + slightlyOff).normalized;
 			Rigidbody2D boltInstance = Instantiate(bolt, transform.position, Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody2D;
 			boltInstance.velocity = speed*dir;
+		}
+
+		//adds brief cooldown if enemy decides not to fire
+		else if (OffCooldown) {
+			OffCooldown = false;
+			cooldownTimer = Random.Range (0,3);
 		}
 
 		//Reenables ability when cooldown timer hits 0 and resets timer
 		if (cooldownTimer > cooldown) {
 			cooldownTimer = 0;
 			OffCooldown = true;
-		}
-	}
-	
-	void OnGUI(){
-		Color fading = new Color (0, 0, 0, 1);
-		//label shows if player uses ability when on cooldown
-		if (CooldownTrigger) {
-			labelTimer += Time.deltaTime;
-			fading.a = (1 - labelTimer / 3);
-			GUI.color = fading;
-			GUI.Label (new Rect (10, 10, 300, 20), "The ability is on cooldown.");
-			if (labelTimer > labelTime) {
-				labelTimer = 0;
-				CooldownTrigger = false;
-			}
 		}
 	}
 }
