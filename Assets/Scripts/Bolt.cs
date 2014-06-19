@@ -20,10 +20,10 @@ public class Bolt : MonoBehaviour {
 
 	private PlayerControl playerCtrl;
 	private Animator anim;
+	private bool firing = false;
 
 	void Awake () {
 		anim = transform.root.gameObject.GetComponent<Animator> ();
-		playerCtrl = transform.root.GetComponent<PlayerControl> ();
 	}
 
 	void Update () {
@@ -39,7 +39,7 @@ public class Bolt : MonoBehaviour {
 		//fires bolt if fire is pressed
 		if (Input.GetButtonDown("Fire1") && OffCooldown) {
 			OffCooldown = false;
-			anim.SetTrigger ("Shoot");
+			firing = true;
 			audio.Play();
 			//finds player position in relation to camera.
 			Vector2 playerScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -48,6 +48,11 @@ public class Bolt : MonoBehaviour {
 			var dir = (mouse - new Vector2 (playerScreenPoint.x,playerScreenPoint.y)).normalized;
 			Rigidbody2D boltInstance = Instantiate(bolt, transform.position, Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody2D;
 			boltInstance.velocity = speed*dir;
+		}
+
+		if (firing) {
+			anim.SetTrigger ("Shoot");
+			firing = false;
 		}
 
 		//Reenables ability when cooldown timer hits 0 and resets timer

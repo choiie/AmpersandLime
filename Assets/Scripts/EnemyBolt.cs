@@ -15,6 +15,7 @@ public class EnemyBolt : MonoBehaviour {
 	public float cooldownTimer = 0f;
 	public string targetTag = "Player";
 	public float aim = 0.9f;
+	public float yOffset = 1f;
 
 	public float labelTime = 3f;
 	[HideInInspector]
@@ -28,7 +29,6 @@ public class EnemyBolt : MonoBehaviour {
 	void Awake () {
 		target = GameObject.FindGameObjectWithTag(targetTag);
 		anim = transform.root.gameObject.GetComponent<Animator> ();
-		enemyCtrl = transform.root.GetComponent<EnemyControl> ();
 	}
 
 	void Update () {
@@ -49,8 +49,9 @@ public class EnemyBolt : MonoBehaviour {
 			Vector2 targetPos = target.transform.position;
 			//finds mouse position
 			Vector2 enemyPos = new Vector2(transform.position.x, transform.position.y);
-			Vector2 slightlyOff = new Vector2 (Random.Range (-1 + aim, 1 - aim),Random.Range (-1 + aim, 1 - aim));
-			var dir = (((targetPos - enemyPos).normalized) + slightlyOff).normalized;
+			Vector2 posDiff = targetPos - enemyPos;
+			Vector2 offset = new Vector2 (Random.Range (-1 + aim, 1 - aim),Random.Range (-1 + aim, 1 - aim) + Mathf.Abs (yOffset*posDiff.x));
+			var dir = ((posDiff.normalized) + offset).normalized;
 			Rigidbody2D boltInstance = Instantiate(bolt, transform.position, Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody2D;
 			boltInstance.velocity = speed*dir;
 		}

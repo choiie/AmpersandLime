@@ -1,29 +1,73 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Orb : MonoBehaviour {
 
 	public GameObject explosion;
-	public float scaleTime = 0.0f;
+	public GameObject fizzle;
+	public float scaleDuration = 2f;
 	public float destroyTime = 2f;
+	public int dmg = 5;
+
+	private bool scaling = true;
+	private float  scaleTime = 0f;
 
 	void Start () {
 		Destroy (gameObject, destroyTime);
-		OrbScale ();	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		var speed = 0.5f;
+		if (scaling) {
+			scaleTime += Time.deltaTime * speed;
+			OrbScale (scaleDuration);
+		}
+
+		if (scaleTime > scaleDuration)
+			scaling = false;
 	}
 
-	void OrbScale() {
+	void OnExplode() {
+		
+	}
+
+	void OnFizzle() {
+
+	}
+
+	void OnTriggerEnter2D (Collider2D col) {
+
+		if (col.tag == "Enemy") {
+			col.gameObject.GetComponent<Enemy>().Hurt(dmg);
+
+			OnExplode();
+
+			Destroy (gameObject);
+		}
+
+		else if (col.tag == "Ground") {
+			OnFizzle ();
+			Destroy (gameObject);
+		}
+
+		else if (col.tag == "Shield") {
+			OnFizzle ();
+			Destroy (gameObject);
+		}
+
+		else if(col.gameObject.tag != "Player")
+		{
+			OnExplode();
+			Destroy (gameObject);
+		}
+
+
+	}
+
+	void OrbScale(float t) {
 		var startScale = Vector3.zero;
 		var endScale = Vector3.one;
-		var speed = 0.5f;
-		while (scaleTime < 1.0) {
-			scaleTime += Time.deltaTime * speed;
-			gameObject.transform.localScale = Vector3.Lerp (startScale, endScale, scaleTime);
-		}
+		gameObject.transform.localScale = Vector3.Lerp (startScale, endScale, t);
 	}
 }

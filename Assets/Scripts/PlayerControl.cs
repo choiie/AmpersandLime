@@ -16,7 +16,8 @@ public class PlayerControl : MonoBehaviour {
 	public AudioClip[] taunts;
 	public float tauntProbability = 50f;
 	public float tauntDelay = 1f;
-	
+
+	private GameObject playerRef;
 	
 	private int tauntIndex;
 	private Transform groundCheck;
@@ -26,8 +27,9 @@ public class PlayerControl : MonoBehaviour {
 	
 	void Awake() {
 		//Setting up references
+		playerRef = GameObject.Find ("References").GetComponent<References> ().playerRef;
 		groundCheck = transform.Find ("groundCheck");
-		anim = GetComponent<Animator>();
+		anim = playerRef.GetComponent<Animator>();
 	}
 	
 	

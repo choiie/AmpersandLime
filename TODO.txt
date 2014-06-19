@@ -2,15 +2,23 @@ TODO AmpersandLime
 
 140607
 
-* Create dummy enemy
-	- fix random movement
-	- setup enemy bolt
+X Create dummy enemy
+X	- fix random movement
+X	- setup enemy bolt
+X	- fix movement close to player
+O	- create edge avoidance
+O	- add dodging
 
-* Make bolts deal damage
-* Set up basic UI
-	- Start screen
-	- Life meter
+X Make bolts deal damage
+X Make bolts explode upon contact
+O Set up fizzle/explode FX
 
-* Add other bolt
-* Add crystals
-* Add equipment
+O Set up basic UI
+O	- Start screen
+O	- Life meter
+O	- Cooldown meters
+
+O Add other bolt
+O Add punch/jab
+O Add crystals
+O Add equipment

@@ -29,7 +29,6 @@ public class EnemyControl : MonoBehaviour {
 	private Animator anim;
 	private GameObject player;
 	private float t;
-	private int i = 0;
 	private bool move = true;
 	private bool avoiding = false;
 	private float directionRoll;
